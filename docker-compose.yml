@@ -1,0 +1,186 @@
+services:
+  user:
+    container_name: user
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+      args:
+        USER_SERVICE_NAME: ${USER_SERVICE_NAME}
+        DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+        DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+        DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+    env_file:
+      - .env
+    expose:
+      - "8003"
+    volumes:
+      - user:/home/transcendance/${USER_SERVICE_NAME}
+      - media_volume:/home/transcendance/user_auth_system/media
+    tty: true
+    networks:
+      - transcendance
+    init: true
+    depends_on:
+      - db_transcendence
+      - redis
+    restart: on-failure
+
+  stat:
+    container_name: stat
+    build:
+      context: ./stat
+      dockerfile: Dockerfile
+      args:
+        STAT_SERVICE_NAME: ${STAT_SERVICE_NAME}
+        DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+        DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+        DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
+    env_file:
+      - .env
+    expose:
+      - "8005"
+    volumes:
+      - user:/home/transcendance/${USER_SERVICE_NAME}
+    tty: true
+    networks:
+      - transcendance
+    init: true
+    depends_on:
+      - user
+      - db_transcendence
+    restart: on-failure
+
+  chat:
+    container_name: chat
+    build:
+      context: ./chat
+      dockerfile: Dockerfile
+      args:
+        CHAT_SERVICE_NAME: ${CHAT_SERVICE_NAME}
+    env_file:
+      - .env
+    expose:
+      - "8004"
+    volumes:
+      - user:/home/transcendance/${USER_SERVICE_NAME}
+    tty: true
+    networks:
+      - transcendance
+    init: true
+    depends_on:
+      - user
+      - db_transcendence
+      - redis
+    restart: on-failure
+
+  online:
+    container_name: online
+    depends_on:
+      - db_transcendence
+      - user
+      - redis
+    build:
+      context: ./online
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: ${ONLINE_SERVICE_NAME}
+    env_file:
+      - .env
+    expose:
+      - "8001"
+    volumes:
+      - user:/home/transcendance/${USER_SERVICE_NAME}
+    tty: true
+    networks:
+      - transcendance
+    init: true
+    restart: on-failure
+
+  bot:
+    container_name: bot
+    depends_on:
+      - redis
+    build:
+      context: ./bot
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: ${BOT_SERVICE_NAME}
+    env_file:
+      - .env
+    expose:
+      - "8002"
+    tty: true
+    networks:
+      - transcendance
+    init: true
+    restart: on-failure
+
+  nginx:
+    container_name: nginx
+    depends_on:
+      - online
+      - bot
+      - user
+      - chat
+      - stat
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - media_volume:/home/transcendance/user_auth_system/media
+    networks:
+      - transcendance
+    env_file: .env
+    # tty: true
+    restart: on-failure
+
+  db_transcendence:
+    container_name: db_transcendence
+    build:
+      context: ./db_transcendence/docker
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: ${DB_TRANSCENDENCE_NAME}
+      POSTGRES_USER: ${DB_TRANSCENDENCE_USER}
+      POSTGRES_PASSWORD: ${DB_TRANSCENDENCE_PASSWORD}
+      PGPORT: ${DB_TRANSCENDENCE_PORT}
+    volumes:
+      - db_transcendence:/var/lib/postgresql/data/
+    expose:
+      - "5434"
+    tty: true
+    networks:
+      - transcendance
+    init: true
+    restart: on-failure
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    expose:
+      - "6379"
+    networks:
+      - transcendance
+    restart: on-failure
+
+volumes:
+  user:
+  db_transcendence:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "${PWD}/db_transcendence/db_transcendence"
+  media_volume:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "${PWD}/db_transcendence/profile_pictures"
+
+networks:
+  transcendance:
+    driver: bridge
