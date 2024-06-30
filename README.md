@@ -3,13 +3,13 @@
 ## 👥 Dream Team
 | Member | Main Contributions |
 |--------|---------------------|
-| Joël | 🖥️ Backend & Remote Players |
-| Diogo | 🎨 Frontend & Tournament System |
-| Rita | 🤖 AI & Live Chat |
-| Raphael | 🔐 Security & Multilingual Support |
-| Alessandro | 📊 Game Stats Dashboard |
+| [Joël](https://github.com/joerober-03) | 🖥️ Backend & Remote Players |
+| [Diogo](https://github.com/Necrom4) | 🎨 Frontend & Tournament System |
+| [Rita](https://github.com/ritberg) | 🤖 AI & Live Chat |
+| [Raphael](https://github.com/rphlr) | 🔐 Security & Multilingual Support |
+| [Alessandro](https://github.com/Alesspal) | 📊 Game Stats Dashboard |
 
-## 🏆 Score
+## 🏆 [Score](https://projects.intra.42.fr/ft_transcendence/rrouille)
 We've crushed it with a whopping **120/100**! 🎉
 
 ## 🛠️ Implemented Modules (Total: 9 points)
