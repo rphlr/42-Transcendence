@@ -14,15 +14,25 @@ We've crushed it with a whopping **120/100**! 🎉
 
 ## 🛠️ Implemented Modules (Total: 9 points)
 ✅ Use of a framework as backend (Major: 1 point)
+
 ✅ Use of a database for the backend (Minor: 0.5 point)
+
 ✅ Standard user management (Major: 1 point)
+
 ✅ Remote players (Major: 1 point)
+
 ✅ Live chat (Major: 1 point)
+
 ✅ AI Opponent (Major: 1 point)
+
 ✅ Game stats dashboards (Minor: 0.5 point)
+
 ✅ Two-Factor Authentication (2FA) and JWT (Major: 1 point)
+
 ✅ Microservices (Major: 1 point)
+
 ✅ Expanding browser compatibility (Minor: 0.5 point)
+
 ✅ Multiple Language Support (Minor: 0.5 point)
 
 **Total Points: 9 out of 7 required** 🌟
